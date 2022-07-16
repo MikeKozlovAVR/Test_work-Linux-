@@ -1,0 +1,71 @@
+The system for modeling the process of control an object represented as an aperiodic link,
+via PI control consists of three applications: "math_model", "control_system", "logger".
+
+All three applications must be launched in any order for the system to work.
+
+Each application starts with its own set of arguments.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				"math_model"
+The application consists of a TCP server that receives control signals from "control_system",
+and a TCP client that sends feedback signals to "control_system".
+The purpose of the application is to calculate the response of an aperiodic link to a control action.
+
+"math_model" takes as arguments an input port, an output port, time constant, gain and iteration period (sampling):
+./math_model -i [in_port] -o [out_port] --Tm [time_const] --Km [gain] -t [period]
+
+The order of entering the arguments is not important, if the arguments were specified incorrectly, the application will display a message:
+"error: Wrong arguments!" and set the above values ​​to default (specified in the development task as an example).
+
+Next, the application starts initializing the TCP server and TCP client.
+In case of successful initializations and connections, the application will display a message: "status: Ready".
+To start the simulation process, the user must enter the "start" command,
+then enter the simulation time interval in seconds,
+for an infinite simulation process, you must specify the simulation time "0".
+- we observe the simulation process with the output of signal values ​​to the terminal.
+At the end of the simulation process (if a non-infinite loop is running), the application will display the message "Cycle ended".
+If an endless simulation process has been started and it is necessary to stop the process, then it is necessary to interrupt the program execution.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				"control_system"
+The application consists of a TCP server that receives feedback signals from "math_model",
+TCP client signaling control to "math_model"
+A TCP client that sends signals with the calculation results for each iteration to the "logger".
+Purpose of the application: calculation of the control signal of a PI controller from the input signal (ref) and the feedback from "math_model".
+
+As arguments "control_system" takes input port, output port, logger port,
+input signal value, controller coefficients and iteration (sampling) period:
+./control_system -i [in_port] -o [out_port] -l [log_port] --ref [reference_value] --kp [prop] --ki [integ] -t [period]
+
+The order of entering the arguments is not important, if the arguments were specified incorrectly, the application will display a message:
+"error: Wrong arguments!" and set the above values ​​to default (specified in the development task as an example).
+
+Next, the application starts initializing the TCP server and two TCP clients.
+In case of successful initializations and connections, the application will display a message: "status: Ready".
+
+After that, the application is ready to receive signals from "math_model" and perform the necessary calculations.
+- we observe the simulation process with the output of signal values ​​to the terminal.
+The application itself does not shut down as it is constantly waiting for signals from "math_model",
+therefore, if it is necessary to terminate the process, then it is necessary to abort the execution of the program.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				"logger"
+The application consists of a TCP server that receives signals with the calculation results for each iteration from "control_system",
+The purpose of the application is to record the results for each iteration of the calculation in the log file.
+
+As arguments, the application takes the input port and the path to the file to which the data should be written:
+./logger -i [in_port] -p [path]
+
+The order of entering the arguments is not important, if the arguments were specified incorrectly, the application will display a message:
+"error: Wrong arguments!" and set the above values ​​to default (specified in the development task as an example).
+
+Next, the application starts initializing the TCP server.
+In case of successful initializations and connections, the application will display a message: "status: Ready".
+
+After that, the application is ready to receive signals from "control_system" and write to the file specified in the argument.
+- we observe the simulation process with the output of signal values ​​for each iteration to the terminal.
+The application itself does not shut down as it is constantly waiting for signals from "control_system",
+therefore, if it is necessary to terminate the process, then it is necessary to abort the execution of the program.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Attention: if one of the three applications stops its work (or the application was interrupted by the user),
+then the modeling process stops completely.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

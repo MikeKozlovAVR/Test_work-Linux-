@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread   CMakeFiles/control_system.dir/source/control_system.cpp.o  -o ../applications/control_system 

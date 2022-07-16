@@ -1,0 +1,5 @@
+/home/mike/Desktop/TCP/cmake_tmp/CMakeFiles/rebuild_cache.dir
+/home/mike/Desktop/TCP/cmake_tmp/CMakeFiles/edit_cache.dir
+/home/mike/Desktop/TCP/cmake_tmp/CMakeFiles/control_system.dir
+/home/mike/Desktop/TCP/cmake_tmp/CMakeFiles/logger.dir
+/home/mike/Desktop/TCP/cmake_tmp/CMakeFiles/math_model.dir
